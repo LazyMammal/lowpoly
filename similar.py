@@ -61,96 +61,28 @@ def net_distance(n, m, dist_func=layer_distance):
     return np.mean(dist)
 
 
+def debug_chart(act1, act2):
+    print '-------'
+    print "                cosine,    L2"
+    print "embed layer {:10.4f} {:10.4f}".format(cosine_distance(act1[-1], act2[-1]), layer_distance(act1[-1], act2[-1]))
+    print "all layers  {:10.4f} {:10.4f}".format(net_distance(act1, act2, dist_func=cosine_distance), net_distance(act1, act2, dist_func=layer_distance))
+
+
 if __name__ == "__main__":
-    if False:
-        embed = calc(load_image())
-        print np.shape(embed)
-        print '-------'
 
-        act = activations(load_image())
-        for c, layer in enumerate(act):
-            print "layer ", c, np.shape(layer)
-        print '-------'
+    print "elephant vs self (224, 224)"
+    act_elephant_224 = activations(load_image('elephant.jpg', target_size=(224, 224)))
+    debug_chart(act_elephant_224, act_elephant_224)
 
-    print "elephant vs self"
-    x = load_image()
-    batch = np.append(x, x, axis=0)
-    embed = calc(batch)
-    print "(224, 224)"
-    print np.shape(embed)
-    print "(cosine distance, similarity) for embed layer"
-    dist = cosine_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(cosine distance, similarity) for all layers"
-    netdist = net_distance(activations(x), activations(x), dist_func=cosine_distance)
-    print netdist, similarity(netdist)
-    print "(L2 distance, similarity) for embed layer"
-    dist = layer_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(L2 distance, similarity) for all layers"
-    netdist = net_distance(activations(x), activations(x), dist_func=layer_distance)
-    print netdist, similarity(netdist)
-    print '-------'
+    print "elephant vs elephant2 (224, 224)"
+    act_elephant2_224 = activations(load_image('elephant2.jpg', target_size=(224, 224)))
+    debug_chart(act_elephant_224, act_elephant2_224)
 
-    print "elephant vs elephant2"
-    x1 = load_image('elephant.jpg', target_size=(224, 224))
-    x2 = load_image('elephant2.jpg', target_size=(224, 224))
-    batch = np.append(x1, x2, axis=0)
-    embed = calc(batch)
-    print "(224, 224)"
-    print np.shape(embed)
-    print "(cosine distance, similarity) for embed layer"
-    dist = cosine_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(cosine distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2), dist_func=cosine_distance)
-    print netdist, similarity(netdist)
-    print "(L2 distance, similarity) for embed layer"
-    dist = layer_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(L2 distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2), dist_func=layer_distance)
-    print netdist, similarity(netdist)
-    print '-------'
+    print "elephant vs elephant2 (800, 500)"
+    act_elephant_800 = activations(load_image('elephant.jpg', target_size=(800, 500)))
+    act_elephant2_800 = activations(load_image('elephant2.jpg', target_size=(800, 500)))
+    debug_chart(act_elephant_800, act_elephant2_800)
 
-    print "elephant vs elephant2"
-    x1 = load_image('elephant.jpg', target_size=(800, 500))
-    x2 = load_image('elephant2.jpg', target_size=(800, 500))
-    batch = np.append(x1, x2, axis=0)
-    embed = calc(batch)
-    print "(800, 500)"
-    print np.shape(embed)
-    print "(cosine distance, similarity) for embed layer"
-    dist = cosine_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(cosine distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2), dist_func=cosine_distance)
-    print netdist, similarity(netdist)
-    print "(L2 distance, similarity) for embed layer"
-    dist = layer_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(L2 distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2), dist_func=layer_distance)
-    print netdist, similarity(netdist)
-    print '-------'
-
-    print "elephant vs firetruck"
-    x1 = load_image('elephant.jpg', target_size=(800, 500))
-    x2 = load_image('firetruck.jpg', target_size=(800, 500))
-    batch = np.append(x1, x2, axis=0)
-    embed = calc(batch)
-    print "(800, 500)"
-    print np.shape(embed)
-    print "(cosine distance, similarity) for embed layer"
-    dist = cosine_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(cosine distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2), dist_func=cosine_distance)
-    print netdist, similarity(netdist)
-    print "(L2 distance, similarity) for embed layer"
-    dist = layer_distance(embed[0], embed[1])
-    print dist, similarity(dist)
-    print "(L2 distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2), dist_func=layer_distance)
-    print netdist, similarity(netdist)
-    print '-------'
+    print "elephant vs firetruck (800, 500)"
+    act_firetruck_800 = activations(load_image('firetruck.jpg', target_size=(800, 500)))
+    debug_chart(act_elephant_800, act_firetruck_800)
