@@ -2,6 +2,7 @@
 Calculate visual similarity of two photos.
 """
 
+import math
 import tensorflow as tf
 from tensorflow import keras
 from keras.preprocessing import image
@@ -33,6 +34,10 @@ def distance(a, b):
     return spatial.distance.cosine(a, b)
 
 
+def similarity(a, b):
+    return 1.0 - 2.0 * math.acos(1.0 - np.clip(distance(a, b), -1, 1)) / math.pi
+
+
 if __name__ == "__main__":
     embed = calc(load_image())
     print np.shape(embed)
@@ -43,7 +48,7 @@ if __name__ == "__main__":
     x2 = load_image('elephant.jpg', target_size=(400, 300))
     result = [calc(x1), calc(x2)]
     print result
-    print distance(result[0], result[1])
+    print distance(result[0], result[1]), similarity(result[0], result[1])
     print '-------'
 
     x1 = load_image('elephant.jpg', target_size=(224, 224))
@@ -51,5 +56,5 @@ if __name__ == "__main__":
     batch = np.append(x1, x2, axis=0)
     result = calc(batch)
     print result
-    print distance(result[0], result[1])
+    print distance(result[0], result[1]), similarity(result[0], result[1])
     print '-------'
