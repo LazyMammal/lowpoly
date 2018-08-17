@@ -4,14 +4,19 @@ Calculate visual similarity of two photos.
 
 import math
 import tensorflow as tf
-from tensorflow import keras
+import keras  # NOT from tensorflow (throws error "AttributeError: 'Tensor' object has no attribute '_keras_shape'")
 from keras.preprocessing import image
 from keras.applications.resnet50 import preprocess_input
+from keras.models import Model
+from keras import backend as K
 import numpy as np
 from scipy import spatial
 
 
-model = tf.keras.applications.ResNet50(include_top=False, pooling='avg')
+model = keras.applications.ResNet50(include_top=False)
+outputs = [layer.output for layer in model.layers][1:]      # all layer outputs (except input)
+# functor = K.function([model.input, K.learning_phase()], outputs)    # evaluation function
+layer_model = Model(inputs=[model.input], outputs=outputs)  # alternate form (either use this or K.function, not both)
 
 
 def load_image(img_path='elephant.jpg', target_size=(224, 224)):
@@ -30,8 +35,13 @@ def calc(x):
     return model.predict(x)
 
 
+def activations(x):
+    # return functor([x, 0.])  # test mode == 0
+    return layer_model.predict(x)
+
+
 def distance(a, b):
-    return spatial.distance.cosine(a, b)
+    return spatial.distance.cosine(np.ravel(a), np.ravel(b))
 
 
 def similarity(a, b):
@@ -41,20 +51,25 @@ def similarity(a, b):
 if __name__ == "__main__":
     embed = calc(load_image())
     print np.shape(embed)
-    print embed
     print '-------'
 
-    x1 = load_image('elephant.jpg', target_size=(800, 600))
-    x2 = load_image('elephant.jpg', target_size=(400, 300))
-    result = [calc(x1), calc(x2)]
-    print result
-    print distance(result[0], result[1]), similarity(result[0], result[1])
+    act = activations(load_image())
+    for c, layer in enumerate(act):
+        print "layer ", c, np.shape(layer)
     print '-------'
 
     x1 = load_image('elephant.jpg', target_size=(224, 224))
     x2 = load_image('elephant2.jpg', target_size=(224, 224))
     batch = np.append(x1, x2, axis=0)
     result = calc(batch)
-    print result
+    print np.shape(result)
+    print distance(result[0], result[1]), similarity(result[0], result[1])
+    print '-------'
+
+    x1 = load_image('elephant.jpg', target_size=(800, 500))
+    x2 = load_image('elephant2.jpg', target_size=(800, 500))
+    batch = np.append(x1, x2, axis=0)
+    result = calc(batch)
+    print np.shape(result)
     print distance(result[0], result[1]), similarity(result[0], result[1])
     print '-------'
