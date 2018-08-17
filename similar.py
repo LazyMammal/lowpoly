@@ -40,7 +40,7 @@ def activations(x):
     return layer_model.predict(x)
 
 
-def distance(a, b):
+def cosine_distance(a, b):
     return spatial.distance.cosine(np.ravel(a), np.ravel(b))
 
 
@@ -56,9 +56,9 @@ def layer_distance(u, v):
     return np.sum(mean)     # sum channel-wise
 
 
-def net_distance(n, m):
-    dist = [layer_distance(u, v) for u, v in zip(n, m)]
-    return np.mean(np.sqrt(dist))
+def net_distance(n, m, dist_func=layer_distance):
+    dist = [dist_func(u, v) for u, v in zip(n, m)]
+    return np.mean(dist)
 
 
 if __name__ == "__main__":
@@ -78,11 +78,17 @@ if __name__ == "__main__":
     embed = calc(batch)
     print "(224, 224)"
     print np.shape(embed)
-    print "(distance, similarity) for embed layer"
-    dist = distance(embed[0], embed[1])
+    print "(cosine distance, similarity) for embed layer"
+    dist = cosine_distance(embed[0], embed[1])
     print dist, similarity(dist)
-    print "(distance, similarity) for all layers"
-    netdist = net_distance(activations(x), activations(x))
+    print "(cosine distance, similarity) for all layers"
+    netdist = net_distance(activations(x), activations(x), dist_func=cosine_distance)
+    print netdist, similarity(netdist)
+    print "(L2 distance, similarity) for embed layer"
+    dist = layer_distance(embed[0], embed[1])
+    print dist, similarity(dist)
+    print "(L2 distance, similarity) for all layers"
+    netdist = net_distance(activations(x), activations(x), dist_func=layer_distance)
     print netdist, similarity(netdist)
     print '-------'
 
@@ -93,11 +99,17 @@ if __name__ == "__main__":
     embed = calc(batch)
     print "(224, 224)"
     print np.shape(embed)
-    print "(distance, similarity) for embed layer"
-    dist = distance(embed[0], embed[1])
+    print "(cosine distance, similarity) for embed layer"
+    dist = cosine_distance(embed[0], embed[1])
     print dist, similarity(dist)
-    print "(distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2))
+    print "(cosine distance, similarity) for all layers"
+    netdist = net_distance(activations(x1), activations(x2), dist_func=cosine_distance)
+    print netdist, similarity(netdist)
+    print "(L2 distance, similarity) for embed layer"
+    dist = layer_distance(embed[0], embed[1])
+    print dist, similarity(dist)
+    print "(L2 distance, similarity) for all layers"
+    netdist = net_distance(activations(x1), activations(x2), dist_func=layer_distance)
     print netdist, similarity(netdist)
     print '-------'
 
@@ -108,11 +120,17 @@ if __name__ == "__main__":
     embed = calc(batch)
     print "(800, 500)"
     print np.shape(embed)
-    print "(distance, similarity) for embed layer"
-    dist = distance(embed[0], embed[1])
+    print "(cosine distance, similarity) for embed layer"
+    dist = cosine_distance(embed[0], embed[1])
     print dist, similarity(dist)
-    print "(distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2))
+    print "(cosine distance, similarity) for all layers"
+    netdist = net_distance(activations(x1), activations(x2), dist_func=cosine_distance)
+    print netdist, similarity(netdist)
+    print "(L2 distance, similarity) for embed layer"
+    dist = layer_distance(embed[0], embed[1])
+    print dist, similarity(dist)
+    print "(L2 distance, similarity) for all layers"
+    netdist = net_distance(activations(x1), activations(x2), dist_func=layer_distance)
     print netdist, similarity(netdist)
     print '-------'
 
@@ -123,10 +141,16 @@ if __name__ == "__main__":
     embed = calc(batch)
     print "(800, 500)"
     print np.shape(embed)
-    print "(distance, similarity) for embed layer"
-    dist = distance(embed[0], embed[1])
+    print "(cosine distance, similarity) for embed layer"
+    dist = cosine_distance(embed[0], embed[1])
     print dist, similarity(dist)
-    print "(distance, similarity) for all layers"
-    netdist = net_distance(activations(x1), activations(x2))
+    print "(cosine distance, similarity) for all layers"
+    netdist = net_distance(activations(x1), activations(x2), dist_func=cosine_distance)
+    print netdist, similarity(netdist)
+    print "(L2 distance, similarity) for embed layer"
+    dist = layer_distance(embed[0], embed[1])
+    print dist, similarity(dist)
+    print "(L2 distance, similarity) for all layers"
+    netdist = net_distance(activations(x1), activations(x2), dist_func=layer_distance)
     print netdist, similarity(netdist)
     print '-------'
