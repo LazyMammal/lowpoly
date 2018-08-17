@@ -62,13 +62,23 @@ def net_distance(n, m, dist_func=layer_distance):
 
 
 def debug_chart(act1, act2):
-    print '-------'
     print "                cosine,    L2"
     print "embed layer {:10.4f} {:10.4f}".format(cosine_distance(act1[-1], act2[-1]), layer_distance(act1[-1], act2[-1]))
     print "all layers  {:10.4f} {:10.4f}".format(net_distance(act1, act2, dist_func=cosine_distance), net_distance(act1, act2, dist_func=layer_distance))
+    print '-------'
 
 
 if __name__ == "__main__":
+    print '-------'
+
+    print "ex_ref vs ex_p0 (224, 224)"
+    act_exref_224 = activations(load_image('ex_ref.png', target_size=(224, 224)))
+    act_exp0_224 = activations(load_image('ex_p0.png', target_size=(224, 224)))
+    debug_chart(act_exref_224, act_exp0_224)
+
+    print "ex_ref vs ex_p1 (224, 224)"
+    act_exp1_224 = activations(load_image('ex_p1.png', target_size=(224, 224)))
+    debug_chart(act_exref_224, act_exp1_224)
 
     print "elephant vs self (224, 224)"
     act_elephant_224 = activations(load_image('elephant.jpg', target_size=(224, 224)))
@@ -86,3 +96,24 @@ if __name__ == "__main__":
     print "elephant vs firetruck (800, 500)"
     act_firetruck_800 = activations(load_image('firetruck.jpg', target_size=(800, 500)))
     debug_chart(act_elephant_800, act_firetruck_800)
+
+    print "Restricting to first 5 layers ..."
+    print '-------'
+
+    print "ex_ref vs ex_p0 (224, 224)"
+    debug_chart(act_exref_224[:5], act_exp0_224[:5])
+
+    print "ex_ref vs ex_p1 (224, 224)"
+    debug_chart(act_exref_224[:5], act_exp1_224[:5])
+
+    print "elephant vs self (224, 224)"
+    debug_chart(act_elephant_224[:5], act_elephant_224[:5])
+
+    print "elephant vs elephant2 (224, 224)"
+    debug_chart(act_elephant_224[:5], act_elephant2_224[:5])
+
+    print "elephant vs elephant2 (800, 500)"
+    debug_chart(act_elephant_800[:5], act_elephant2_800[:5])
+
+    print "elephant vs firetruck (800, 500)"
+    debug_chart(act_elephant_800[:5], act_firetruck_800[:5])
