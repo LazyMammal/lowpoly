@@ -49,8 +49,8 @@ def similarity(dist):
 
 
 def layer_distance(u, v):
-    u /= np.linalg.norm(u)  # normalize layer activations
-    v /= np.linalg.norm(v)
+    u /= np.linalg.norm(u, axis=3, keepdims=True) + keras.backend.epsilon()  # normalize along channel dimension
+    v /= np.linalg.norm(v, axis=3, keepdims=True) + keras.backend.epsilon()
     diff = (u - v)**2       # squared difference
     mean = np.mean(np.mean(diff, axis=2), axis=1)  # average spatially
     return np.sum(mean)     # sum channel-wise
