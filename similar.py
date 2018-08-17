@@ -53,7 +53,7 @@ def layer_distance(u, v):
     v /= np.linalg.norm(v, axis=3, keepdims=True) + keras.backend.epsilon()
     diff = (u - v)**2       # squared difference
     mean = np.mean(np.mean(diff, axis=2), axis=1)  # average spatially
-    return np.sum(mean)     # sum channel-wise
+    return np.sum(mean)/2.  # sum channel-wise, scale to same range as cosine distance
 
 
 def net_distance(n, m, dist_func=layer_distance):
