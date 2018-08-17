@@ -6,14 +6,21 @@ import math
 import tensorflow as tf
 import keras  # NOT from tensorflow (throws error "AttributeError: 'Tensor' object has no attribute '_keras_shape'")
 from keras.preprocessing import image
-from keras.applications.resnet50 import preprocess_input
+#from keras.applications.resnet50 import preprocess_input
+#from keras.applications.vgg16 import preprocess_input
+from keras.applications.inception_v3 import preprocess_input
+#from keras.applications.mobilenet import preprocess_input
 from keras.models import Model
 from keras import backend as K
 import numpy as np
 from scipy import spatial
 
 
-model = keras.applications.ResNet50(include_top=False)
+#model = keras.applications.ResNet50(include_top=False)
+#model = keras.applications.VGG16(include_top=False)
+model = keras.applications.InceptionV3(include_top=False)
+#model = keras.applications.MobileNet(include_top=False)
+
 outputs = [layer.output for layer in model.layers][1:]      # all layer outputs (except input)
 # functor = K.function([model.input, K.learning_phase()], outputs)    # evaluation function
 layer_model = Model(inputs=[model.input], outputs=outputs)  # alternate form (either use this or K.function, not both)
@@ -52,6 +59,7 @@ def layer_distance(u, v):
     u /= np.linalg.norm(u, axis=3, keepdims=True) + keras.backend.epsilon()  # normalize along channel dimension
     v /= np.linalg.norm(v, axis=3, keepdims=True) + keras.backend.epsilon()
     diff = (u - v)**2       # squared difference
+    # TODO: apply LPIPS linear model?
     mean = np.mean(np.mean(diff, axis=2), axis=1)  # average spatially
     return np.sum(mean)/2.  # sum channel-wise, scale to same range as cosine distance
 
